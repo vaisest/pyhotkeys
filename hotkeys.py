@@ -2,6 +2,7 @@ from functools import reduce
 from typing import Callable, Optional
 import win32gui
 import win32con
+import win32api
 import time
 
 
@@ -56,3 +57,13 @@ class Hotkeys:
         while True:
             self.poll_messages()
             time.sleep(0.01)
+
+def is_key_down(keycode: int) -> bool:
+    "Check if the key is physically held down."
+    return win32api.GetKeyState(keycode) & 0x8000 # "If the high-order bit is 1, the key is down; otherwise, it is up."
+
+def modifier_is_active(keycode:int) -> bool:
+    """Check if the modifier is currently active.
+    This does not correspond to the physical up or down state of the key."""
+    # "If the low-order bit is 1, the key is toggled.
+    return win32api.GetKeyState(keycode) & 1
